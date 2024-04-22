@@ -1,11 +1,11 @@
-bankers.py
-berkley.py
-bully.py
-clock.py
-gc-client.py
-gc-server.py
-ipc-client.py
-ipc-server.py
-lb.py
-mt.py
-raymond.py
+curl litcode.me/bankers.py
+curl litcode.me/berkley.py
+curl litcode.me/bully.py
+curl litcode.me/clock.py
+curl litcode.me/gc-client.py
+curl litcode.me/gc-server.py
+curl litcode.me/ipc-client.py
+curl litcode.me/ipc-server.py
+curl litcode.me/lb.py
+curl litcode.me/mt.py
+curl litcode.me/raymond.py

@@ -3,30 +3,34 @@ import socket
 
 def main():
     try:
-        # Connect to the server running on localhost, port 12345
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-            client_socket.connect(("localhost", 12345))
-            print("Connected to server.")
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect(("localhost", 1200))
 
-            # Create input and output streams for communication
-            in_stream = client_socket.makefile("r")
-            out_stream = client_socket.makefile("w")
+        print(" \n \t************* CLIENT PROCESS STARTED ********************** ")
+        print(
+            "\n ********* PLEASE ENTER THE VALUES OF Number 1 AND Number 2 TO PASS THEM TO SERVER PROCESS******** \n"
+        )
 
-            # Send and receive messages
-            while True:
-                message = input(
-                    "Enter message to send to server (or type 'exit' to quit): "
-                )
-                out_stream.write(message + "\n")
-                out_stream.flush()
+        a = int(input("Enter Number 1: "))
+        print("Number 1 ====>", a)
+        client_socket.sendall(str(a).encode())
 
-                if message.lower() == "exit":
-                    break
+        b = int(input("Enter Number 2: "))
+        print("Number 2 ====>", b)
+        client_socket.sendall(str(b).encode())
 
-                print("process 1:", in_stream.readline().strip())
+        data = client_socket.recv(1024)
+        result = int(data.decode())
+        print(
+            "\n.............CLIENT PROCESS HAS RECEIVED RESULT FROM SERVER...............\n"
+        )
+        print("\n THE ADDITION OF", a, "AND", b, "IS", result)
 
     except Exception as e:
-        print("Error:", e)
+        print("Exception is", e)
+
+    finally:
+        client_socket.close()
 
 
 if __name__ == "__main__":

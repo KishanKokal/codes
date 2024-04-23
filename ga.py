@@ -1,52 +1,64 @@
-import time
-import random
+def time(s):
+    ans = s.split(":")
+    return int(ans[0]) * 60 + int(ans[1]) + int(ans[2]) / 60
 
 
-class Node:
-    def __init__(self, node_id, clock_time):
-        self.node_id = node_id
-        self.clock_time = clock_time
+n = input("Enter the agreed clock time: ")
 
-    def synchronize_clock(self, master_time):
-        self.clock_time = master_time
+init_val = time(n)
+
+nodes = int(input("Enter the number of nodes: "))
+
+dict_nodes = {}
+ls = []
+
+for i in range(nodes):
+    print(f"Enter the clock time for {i + 1} node : ")
+    x = input()
+    ls.append(time(x))
+    dict_nodes[chr(97 + i)] = []
+
+print()
+for key in dict_nodes.keys():
+    print(f"{key} : {dict_nodes[key]}")
+
+print()
+print(ls)
+
+for i in range(nodes):
+    val = -float("inf")
+    for i in range(nodes):
+        diff = ls[i] - init_val
+        dict_nodes[chr(97 + i)].append(diff)
+        if diff < 0:
+            val = max(val, diff)
+    for i in range(nodes):
+        if val != -float("inf"):
+            ls[i] += abs(val)
+    print()
+    print(*ls)
+
+print()
+for key in dict_nodes.keys():
+    print(f"{key} : {dict_nodes[key]}")
+
+for i in range(nodes):
+    avg = sum(dict_nodes[chr(97 + i)]) / nodes
+    if avg >= 0:
+        ls[i] -= abs(avg)
+    else:
+        ls[i] += abs(avg)
+
+print()
+print(ls)
 
 
-def master(node_list):
-    # Request time from all nodes
-    node_times_before = {}
-    for node in node_list:
-        node_times_before[node.node_id] = node.clock_time
-        print("Master Node ===> ", node.node_id)
-        print(f"{node.node_id} time: {node.clock_time} ===> Master Node")
-
-    print("=" * 10)
-
-    # Calculate average time
-    average_time = sum(node_times_before.values()) / len(node_list)
-
-    # Send synchronization message to all nodes
-    for node in node_list:
-        print(f"Master Node time: {average_time} ===> ", node.node_id)
-        node.synchronize_clock(average_time)
-
-    print("=" * 10)
-
-    # Print before and after synchronization times for all nodes
-    print("Before synchronization:")
-    for node_id, time_before in node_times_before.items():
-        print(f"Node {node_id} time: {time_before}")
-
-    print("\nAfter synchronization:")
-    for node in node_list:
-        print(f"Node {node.node_id} time: {node.clock_time}")
-
-    print("\nMaster node synchronized all nodes to time:", average_time)
+def get_time(val):
+    hours = int(val // 60)
+    mins = int(val - hours * 60)
+    seconds = int((val - int(val)) * 60)
+    return str(hours) + ":" + str(mins) + ":" + str(seconds)
 
 
-if __name__ == "__main__":
-    # Initialize master and nodes
-    master_node = Node("Master", 0)
-    nodes = [Node(f"Node-{i}", random.uniform(0, 10)) for i in range(1, 6)]
-
-    # Simulate master node requesting and synchronizing time
-    master(nodes)
+for i in range(nodes):
+    print(f"Time for Node {chr(97 + i)} : ", get_time(ls[i]))

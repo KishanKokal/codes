@@ -1,63 +1,82 @@
-def is_safe(processes, avail, maxm, allot):
-    need = []
-    for i in range(len(processes)):
-        need.append([0] * len(avail))
-        for j in range(len(avail)):
+P = 5
+
+R = 3
+
+
+def calculateNeed(need, maxm, allot):
+
+    for i in range(P):
+        for j in range(R):
+
             need[i][j] = maxm[i][j] - allot[i][j]
 
-    finish = [0] * len(processes)
-    safe_seq = []
-    work = avail[:]
 
-    while True:
+def isSafe(processes, avail, maxm, allot):
+    need = []
+    for i in range(P):
+        l = []
+        for j in range(R):
+            l.append(0)
+        need.append(l)
+
+    calculateNeed(need, maxm, allot)
+
+    finish = [0] * P
+
+    safeSeq = [0] * P
+
+    work = [0] * R
+    for i in range(R):
+        work[i] = avail[i]
+
+    count = 0
+    while count < P:
+
         found = False
-        for i in range(len(processes)):
-            if finish[i] == 0:
-                if all(need[i][j] <= work[j] for j in range(len(avail))):
-                    for j in range(len(avail)):
-                        work[j] += allot[i][j]
-                    safe_seq.append(i)
-                    finish[i] = 1
+        for p in range(P):
+
+            if finish[p] == 0:
+
+                for j in range(R):
+                    if need[p][j] > work[j]:
+                        break
+
+                if j == R - 1:
+
+                    for k in range(R):
+                        work[k] += allot[p][k]
+
+                    safeSeq[count] = p
+                    count += 1
+
+                    # Mark this p as finished
+                    finish[p] = 1
+
                     found = True
-                    break
-        if not found:
-            break
 
-    return all(finish), safe_seq
+        if found == False:
+            print("System is not in safe state")
+            return False
 
+    print("System is in safe state.", "\nSafe sequence is: ", end=" ")
+    for index, i in enumerate(safeSeq):
+        if index == len(safeSeq) - 1:
+            print(f"P{i+1}", end=" ")
+        else:
+            print(f"P{i+1}", "-->", end=" ")
+    print("\n")
 
-def main():
-    n = int(input("Enter number of processes: "))
-    m = int(input("Enter number of resources: "))
-
-    print("Enter Allocation Matrix:")
-    allocation = [list(map(int, input().split())) for _ in range(n)]
-
-    print("Enter Max Matrix:")
-    max_matrix = [list(map(int, input().split())) for _ in range(n)]
-
-    print("Enter Available Resources:")
-    available = list(map(int, input().split()))
-
-    processes = [i for i in range(n)]
-
-    safe, sequence = is_safe(processes, available, max_matrix, allocation)
-
-    if safe:
-        print("System is in safe state.")
-        print("Safe sequence is:", [i + 1 for i in sequence])
-    else:
-        print("System is in unsafe state.")
-        for i, process in enumerate(processes):
-            if process not in sequence:
-                print("Resources cannot be granted for process", process + 1)
-
-    for i in sequence:
-        print("Resources granted for process", i + 1, "successfully.")
-        print("Available resources after process", i + 1, ":")
-        available = [avail + alloc for avail, alloc in zip(available, allocation[i])]
-        print(*available)
+    return True
 
 
 if __name__ == "__main__":
-    main()
+
+    processes = [0, 1, 2, 3, 4]
+
+    avail = [3, 3, 2]
+
+    maxm = [[7, 5, 3], [3, 2, 2], [9, 0, 2], [2, 2, 2], [4, 3, 3]]
+
+    allot = [[0, 1, 0], [2, 0, 0], [3, 0, 2], [2, 1, 1], [0, 0, 2]]
+
+    isSafe(processes, avail, maxm, allot)

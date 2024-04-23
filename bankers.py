@@ -1,82 +1,59 @@
-P = 5
+def main():
+    numProcesses = int(input("Enter the number of processes: "))
+    numResources = int(input("Enter the number of resources: "))
 
-R = 3
+    # Input allocation matrix
+    print("Enter the allocation matrix:")
+    allocationMatrix = []
+    for i in range(numProcesses):
+        row = list(map(int, input().split()))
+        allocationMatrix.append(row)
 
+    # Input max matrix
+    print("Enter the max matrix:")
+    maxMatrix = []
+    for i in range(numProcesses):
+        row = list(map(int, input().split()))
+        maxMatrix.append(row)
 
-def calculateNeed(need, maxm, allot):
+    # Input available resources
+    print("Enter the available resources:")
+    availableResources = list(map(int, input().split()))
 
-    for i in range(P):
-        for j in range(R):
+    isFinished = [0] * numProcesses
+    safeSequence = []
+    needMatrix = [
+        [maxMatrix[i][j] - allocationMatrix[i][j] for j in range(numResources)]
+        for i in range(numProcesses)
+    ]
 
-            need[i][j] = maxm[i][j] - allot[i][j]
-
-
-def isSafe(processes, avail, maxm, allot):
-    need = []
-    for i in range(P):
-        l = []
-        for j in range(R):
-            l.append(0)
-        need.append(l)
-
-    calculateNeed(need, maxm, allot)
-
-    finish = [0] * P
-
-    safeSeq = [0] * P
-
-    work = [0] * R
-    for i in range(R):
-        work[i] = avail[i]
-
-    count = 0
-    while count < P:
-
-        found = False
-        for p in range(P):
-
-            if finish[p] == 0:
-
-                for j in range(R):
-                    if need[p][j] > work[j]:
+    for k in range(numProcesses):
+        for i in range(numProcesses):
+            if isFinished[i] == 0:
+                flag = 0
+                for j in range(numResources):
+                    if needMatrix[i][j] > availableResources[j]:
+                        flag = 1
                         break
+                if flag == 0:
+                    safeSequence.append(i)
+                    for y in range(numResources):
+                        availableResources[y] += allocationMatrix[i][y]
+                    isFinished[i] = 1
 
-                if j == R - 1:
+    flag = 1
+    for i in range(numProcesses):
+        if isFinished[i] == 0:
+            flag = 0
+            print("The system is not safe.")
+            break
 
-                    for k in range(R):
-                        work[k] += allot[p][k]
-
-                    safeSeq[count] = p
-                    count += 1
-
-                    # Mark this p as finished
-                    finish[p] = 1
-
-                    found = True
-
-        if found == False:
-            print("System is not in safe state")
-            return False
-
-    print("System is in safe state.", "\nSafe sequence is: ", end=" ")
-    for index, i in enumerate(safeSeq):
-        if index == len(safeSeq) - 1:
-            print(f"P{i+1}", end=" ")
-        else:
-            print(f"P{i+1}", "-->", end=" ")
-    print("\n")
-
-    return True
+    if flag == 1:
+        print("SAFE Sequence:", end=" ")
+        for i in range(numProcesses - 1):
+            print("P%d ->" % safeSequence[i], end=" ")
+        print("P%d" % safeSequence[numProcesses - 1])
 
 
 if __name__ == "__main__":
-
-    processes = [0, 1, 2, 3, 4]
-
-    avail = [3, 3, 2]
-
-    maxm = [[7, 5, 3], [3, 2, 2], [9, 0, 2], [2, 2, 2], [4, 3, 3]]
-
-    allot = [[0, 1, 0], [2, 0, 0], [3, 0, 2], [2, 1, 1], [0, 0, 2]]
-
-    isSafe(processes, avail, maxm, allot)
+    main()

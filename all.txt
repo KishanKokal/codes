@@ -247,6 +247,64 @@ if __name__ == "__main__":
     main()
 
 
+3. Global Averaging Method
+
+ga.py
+===================================================================
+import time
+import random
+
+
+class Node:
+    def __init__(self, node_id, clock_time):
+        self.node_id = node_id
+        self.clock_time = clock_time
+
+    def synchronize_clock(self, master_time):
+        self.clock_time = master_time
+
+
+def master(node_list):
+    # Request time from all nodes
+    node_times_before = {}
+    for node in node_list:
+        node_times_before[node.node_id] = node.clock_time
+        print("Master Node ===> ", node.node_id)
+        print(f"{node.node_id} time: {node.clock_time} ===> Master Node")
+
+    print("=" * 10)
+
+    # Calculate average time
+    average_time = sum(node_times_before.values()) / len(node_list)
+
+    # Send synchronization message to all nodes
+    for node in node_list:
+        print(f"Master Node time: {average_time} ===> ", node.node_id)
+        node.synchronize_clock(average_time)
+
+    print("=" * 10)
+
+    # Print before and after synchronization times for all nodes
+    print("Before synchronization:")
+    for node_id, time_before in node_times_before.items():
+        print(f"Node {node_id} time: {time_before}")
+
+    print("\nAfter synchronization:")
+    for node in node_list:
+        print(f"Node {node.node_id} time: {node.clock_time}")
+
+    print("\nMaster node synchronized all nodes to time:", average_time)
+
+
+if __name__ == "__main__":
+    # Initialize master and nodes
+    master_node = Node("Master", 0)
+    nodes = [Node(f"Node-{i}", random.uniform(0, 10)) for i in range(1, 6)]
+
+    # Simulate master node requesting and synchronizing time
+    master(nodes)
+
+
 4. Berkley Algorithm
 
 berkley.py
@@ -526,6 +584,48 @@ if __name__ == "__main__":
             continue
 
         request(node_id, node_id)
+
+
+7. Ricart-Agrawala Algorithm
+
+ricart.py
+===================================================================
+def main():
+    ns = int(input("Enter number of sites: "))
+    ncs = int(input("Enter number of sites which want to enter critical section: "))
+
+    ts = [0] * ns
+    request = []
+    mp = {}
+
+    for _ in range(ncs):
+        timestamp = int(input("\nEnter timestamp: "))
+        site = int(input("Enter site number: "))
+        ts[site - 1] = timestamp
+        request.append(site)
+        mp[timestamp] = site
+
+    print("\nSites and Timestamp:\n")
+    for i in range(len(ts)):
+        print(i + 1, ts[i])
+
+    for i in range(len(request)):
+        print("\nRequest from site:", request[i])
+        for j in range(len(ts)):
+            if request[i] != (j + 1):
+                if ts[j] > ts[request[i] - 1] or ts[j] == 0:
+                    print(j + 1, "Replied")
+                else:
+                    print(j + 1, "Deferred")
+
+    print()
+    c = 0
+    for timestamp, site in mp.items():
+        print("Site", site, "entered Critical Section", "at timestamp", timestamp)
+
+
+if __name__ == "__main__":
+    main()
 
 
 8. Banker's Algorithm

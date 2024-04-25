@@ -1,13 +1,13 @@
-curl litcode.me/bankers.py
-curl litcode.me/Bankers.java
-curl litcode.me/berkley.py
-curl litcode.me/bully.py
-curl litcode.me/ga.py [Global Averaging]
-curl litcode.me/gc-client.py [Group Communication]
-curl litcode.me/gc-server.py [Group Communication]
-curl litcode.me/ipc-client.py [Inter Process Communication]
-curl litcode.me/ipc-server.py [Inter Process Communication]
-curl litcode.me/lb.py [Load Balancer]
-curl litcode.me/mt.py [Multithreading]
-curl litcode.me/raymond.py
-curl litcode.me/ricart.py
+bankers.py
+Bankers.java
+berkley.py
+bully.py
+ga.py [Global Averaging]
+gc-client.py [Group Communication]
+gc-server.py [Group Communication]
+ipc-client.py [Inter Process Communication]
+ipc-server.py [Inter Process Communication]
+lb.py [Load Balancer]
+mt.py [Multithreading]
+raymond.py
+ricart.py
